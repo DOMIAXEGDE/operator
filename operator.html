@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Operator System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Theme and font settings -->
+  <style>
+    :root {
+      --primary-color: #4B5320;
+      --secondary-color: #BDB76B;
+      --font-main: 'Fira Code', monospace;
+      --text-color: #222;
+      --bg-color: #fcfcf7;
+    }
+
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%; width: 100%;
+      background: var(--bg-color);
+      font-family: var(--font-main);
+    }
+
+    #x140 {                        /* was #operator-root */
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="x140"></div>            <!-- Root QCell Mount -->
+
+  <!-- Entry Point Loader -->
+  <script type="module">
+    import { x22 } from './operator-quadtree.js';       // Kernel
+    import { x80 } from './operator-map.js';            // Charset view
+    import { x100 } from './operator-alphabet.js';      // Grid renderer
+    import { x120 } from './operator-build.js';         // Terminal
+    import { x67 } from './operator-language.js';       // Lang ops
+    import { x139 } from './operator-extensions.js';    // Clipboard ops
+
+    import { x68, x69 } from './operator-systems.js';   // Dropdown manager
+
+    import { x39 } from './operator-core.js';           // Kernel core
+
+    // 1. Boot quadtree kernel
+    const x141 = new x22({ rootEl: document.getElementById('x140') });
+    x141.x31();                                         // build root
+
+    // 2. Mount dropdown in corner (optional)
+    const nav = document.createElement('div');
+    nav.id = 'x142';                                     // nav container
+    nav.style.cssText = `
+      position: absolute; top: 10px; right: 10px; width: 250px;
+      z-index: 9999; background: white; padding: 10px; border: 1px solid #aaa;
+    `;
+    document.body.appendChild(nav);
+    x68('x142'); // init dropdown system
+
+    // 3. Register systems with load functions
+    x69({ id: 'charset', name: 'Charset Map', description: 'ID mapping', loadFunction: () => {
+      const cell = x141.x28;
+      cell.x33 = new x80(cell);
+      cell.x33.x84();
+    }});
+
+    x69({ id: 'grid', name: 'Tile Grid', description: 'Color grid viewer', loadFunction: () => {
+      const cell = x141.x28;
+      cell.x33 = new x100(cell);
+      cell.x33.x105();
+    }});
+
+    x69({ id: 'logic', name: 'Logic Terminal', description: 'Slot manager', loadFunction: () => {
+      const cell = x141.x28;
+      cell.x33 = new x120(cell);
+      cell.x33.x125();
+    }});
+
+    // 4. Install dropdown search
+    x68._nav && x68._nav.querySelector && setTimeout(() => {
+      import('./operator-systems.js').then(mod => mod.x78('Search...'));
+    }, 100);
+
+    // 5. Inject shared opcodes to all kernels (built-ins + lang + export)
+    const k = new x39([]);      // example kernel
+    k.x51();                    // built-ins
+    x67(k);                     // language ops
+    x139(k);                    // clipboard ops
+  </script>
+</body>
+</html>
